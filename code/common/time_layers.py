@@ -35,7 +35,6 @@ class RNN:
 
         return dx, dh_prev
 
-
 class TimeRNN:
     def __init__(self, Wx, Wh, b, stateful=False):
         self.params = [Wx, Wh, b]
@@ -55,7 +54,7 @@ class TimeRNN:
 
         if not self.stateful or self.h is None:
             self.h = np.zeros((N, H), dtype='f')
-
+        
         for t in range(T):
             layer = RNN(*self.params)
             self.h = layer.forward(xs[:, t, :], self.h)
@@ -63,7 +62,7 @@ class TimeRNN:
             self.layers.append(layer)
 
         return hs
-
+    
     def backward(self, dhs):
         Wx, Wh, b = self.params
         N, T, H = dhs.shape
@@ -85,7 +84,7 @@ class TimeRNN:
         self.dh = dh
 
         return dxs
-
+    
     def set_state(self, h):
         self.h = h
 

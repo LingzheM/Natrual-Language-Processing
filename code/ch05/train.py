@@ -2,11 +2,25 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
+import numpy as np
 from common.optimizer import SGD
 from common.trainer import RnnlmTrainer
 from dataset import ptb
 from simple_rnnlm import SimpleRnnlm
 
+
+def generate(model, start_id, sample_size=20):
+    word_ids = [start_id]
+    model.reset_state()
+    x = np.array(start_id).reshape(1, 1)
+    for _ in range(sample_size):
+        score = model.forward(x, None)
+        p = np.exp(score[0, -1])
+        p /= p.sum()
+        next_id = np.random.choice(len(p), p=p)
+        word_ids.append(next_id)
+        x = np.array(next_id).reshape(1, 1)
+    return word_ids
 
 # 设定超参数
 batch_size = 10
